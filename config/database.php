@@ -15,7 +15,7 @@ return [
     'port' => 3306,
     
     // Име на базата данни
-    'database' => 'my_php_framework',
+    'database' => 'orders',
     
     // Потребителско име
     'username' => 'root',
