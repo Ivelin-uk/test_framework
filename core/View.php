@@ -29,8 +29,14 @@ class View
      */
     public function render($template, $data = [])
     {
-        $this->data = array_merge($this->data, $data);
-        
+        // Поддръжка на стария подпис: render('dir','view', data)
+        if (is_string($template) && is_string($data)) {
+            $template = trim($template, '.\/') . '/' . trim($data, '.\/');
+            $data = func_num_args() >= 3 ? func_get_arg(2) : [];
+        }
+
+        $this->data = array_merge($this->data, is_array($data) ? $data : []);
+
         $templatePath = $this->getTemplatePath($template);
         
         if (!file_exists($templatePath)) {

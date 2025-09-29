@@ -13,6 +13,8 @@ abstract class Controller
     protected $view;
     /** @var \Core\Model|null */
     protected $model;
+    /** @var array Данни, които ще се подават към изгледите */
+    protected $data = [];
     
     /**
      * Конструктор
@@ -20,6 +22,27 @@ abstract class Controller
     public function __construct()
     {
         $this->view = new View();
+    }
+
+    /**
+     * Задава данни към текущия контролер за рендериране
+     * Може да подадете масив или ключ/стойност
+     */
+    protected function set_data($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->data = array_merge($this->data, $key);
+        } else {
+            $this->data[$key] = $value;
+        }
+    }
+
+    /**
+     * Връща натрупаните данни за рендериране
+     */
+    protected function get_data(): array
+    {
+        return $this->data;
     }
 
     /**
@@ -93,7 +116,9 @@ abstract class Controller
      */
     protected function render($template, $data = [])
     {
-        $this->view->render($template, $data);
+        // Обединяем данните от контролера с данните от извикването
+        $payload = array_merge($this->data, $data);
+        $this->view->render($template, $payload);
     }
     
     /**

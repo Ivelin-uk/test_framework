@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function products()
     {
-        echo "<pre>";
+    // Зареждане на потребител и продукти и рендер на изглед
         var_dump('in');
         echo "</pre>";
         exit();
@@ -40,8 +40,12 @@ class UserController extends Controller
         $this->set_model('product');
         $products = $this->model->all();
         
-        var_dump($products);
-        echo "</pre>";
+
+        $this->set_data('user', $user);
+        $this->set_data('products', $products);
+        $this->view->render('users', 'show', $this->get_data());
+
+         echo "<pre>";
 
     }
 

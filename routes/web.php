@@ -10,3 +10,8 @@ $router->get('/users/products', [
     'controller' => 'UserController',
     'action' => 'products'
 ]);
+
+$router->get('/users/show', [
+    'controller' => 'UserController',
+    'action' => 'show'
+]);
