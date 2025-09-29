@@ -70,7 +70,7 @@
         
         <form id="addUserForm" action="<?= $this->url('users') ?>" method="POST" style="margin: 1rem 0;">
             <div class="form-group">
-                <label for="newUserName">Имеd *</label>
+                <label for="newUserName">Име *</label>
                 <input type="text" id="newUserName" name="name" required>
             </div>
             
