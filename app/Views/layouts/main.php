@@ -15,7 +15,10 @@
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('users') ?>">Потребители</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('') ?>">Начало</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('users/products') ?>">Продукти</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/login') ?>">Логин</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('users/register') ?>">Регистър</a></li>
                 </ul>
             </div>
         </div>

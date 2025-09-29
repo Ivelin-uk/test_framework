@@ -12,6 +12,7 @@ class View
 {
     private $viewsPath;
     private $data = [];
+    private $layout = 'layouts/main';
     
     /**
      * Конструктор
@@ -52,10 +53,21 @@ class View
         // Включване на шаблона
         include $templatePath;
         
-        // Получаване на съдържанието
+        // Получаване на съдържанието на изгледа
         $content = ob_get_clean();
-        
-        echo $content;
+
+        // Ако има зададен layout – включваме го и подаваме $content вътре
+        if (!empty($this->layout)) {
+            $layoutPath = $this->getTemplatePath($this->layout);
+            if (!file_exists($layoutPath)) {
+                throw new \Exception("Layout '{$this->layout}' не съществува в {$layoutPath}");
+            }
+
+            // $content и всички извлечени променливи са налични тук
+            include $layoutPath;
+        } else {
+            echo $content;
+        }
     }
     
     /**
@@ -85,7 +97,16 @@ class View
         include $templatePath;
         
         // Получаване на съдържанието
-        return ob_get_clean();
+        $content = ob_get_clean();
+        return $content;
+    }
+
+    /**
+     * Задава или изключва layout. Пример: setLayout('layouts/main') или setLayout(null) за изключване
+     */
+    public function setLayout(?string $layout): void
+    {
+        $this->layout = $layout;
     }
     
     /**

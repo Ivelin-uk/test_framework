@@ -29,11 +29,7 @@ class UserController extends Controller
      */
     public function register()
     {
-        // Позволяваме показване на съобщение за успех чрез query параметър
-        $success = $this->get('success');
-        $this->view->render('auth', 'register', [
-            'success' => $success
-        ]);
+        $this->view->render('auth', 'register', $this->get_data());
     }
 
     public function save()

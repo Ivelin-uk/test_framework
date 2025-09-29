@@ -5,7 +5,19 @@
 
 $router = $app->getRouter();
 
-// Начална страница
+// Начало
+$router->get('/', [
+    'controller' => 'HomeController',
+    'action' => 'index'
+]);
+
+// Логин
+$router->get('/auth/login', [
+    'controller' => 'AuthController',
+    'action' => 'login'
+]);
+
+// Продукти
 $router->get('/users/products', [
     'controller' => 'UserController',
     'action' => 'products'
