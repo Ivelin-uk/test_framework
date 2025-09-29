@@ -29,16 +29,29 @@ class UserController extends Controller
      */
     public function register()
     {
-        $this->view->render('auth', 'register', []);
+        // Позволяваме показване на съобщение за успех чрез query параметър
+        $success = $this->get('success');
+        $this->view->render('auth', 'register', [
+            'success' => $success
+        ]);
     }
 
     public function save()
     {
+        // Обработка на регистрационната форма
+        if (!$this->isPost()) {
+            return $this->redirect($this->view->url('users/register'));
+        }
+        // Събиране на всички POST данни като обект автоматично
+        $input = $this->request->toObject();
+
         echo "<pre>";
-        var_dump("in");
+        var_dump($input);
         echo "</pre>";
         exit();
-        // Обработка на регистрационната форма
+
+        // ...тук продължава обработката: валидация, създаване на потребител, redirect/рендер
+
     }
 
     /**

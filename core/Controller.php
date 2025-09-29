@@ -11,6 +11,7 @@ namespace Core;
 abstract class Controller
 {
     protected $view;
+    protected $request;
     /** @var \Core\Model|null */
     protected $model;
     /** @var array Данни, които ще се подават към изгледите */
@@ -22,6 +23,7 @@ abstract class Controller
     public function __construct()
     {
         $this->view = new View();
+        $this->request = new Request();
     }
 
     /**
@@ -155,11 +157,7 @@ abstract class Controller
      */
     protected function post($key = null, $default = null)
     {
-        if ($key === null) {
-            return $_POST;
-        }
-        
-        return $_POST[$key] ?? $default;
+        return $this->request->post($key, $default);
     }
     
     /**
@@ -171,11 +169,7 @@ abstract class Controller
      */
     protected function get($key = null, $default = null)
     {
-        if ($key === null) {
-            return $_GET;
-        }
-        
-        return $_GET[$key] ?? $default;
+        return $this->request->get($key, $default);
     }
     
     /**
@@ -185,7 +179,7 @@ abstract class Controller
      */
     protected function isPost()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'POST';
+        return $this->request->isPost();
     }
     
     /**
@@ -195,7 +189,7 @@ abstract class Controller
      */
     protected function isGet()
     {
-        return $_SERVER['REQUEST_METHOD'] === 'GET';
+        return $this->request->isGet();
     }
     
     /**
@@ -205,7 +199,6 @@ abstract class Controller
      */
     protected function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        return $this->request->isAjax();
     }
 }
