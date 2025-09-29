@@ -11,7 +11,7 @@
     <div class="alert alert-danger"><?= $this->escape($errors['general']) ?></div>
   <?php endif; ?>
 
-  <form method="post" action="<?= $this->url('users/save') ?>" class="g-3">
+  <form method="post" action="<?= $this->url('auth/register') ?>" class="g-3">
     <div class="mb-3">
         <label class="form-label">Потребителско име</label>
         <input type="text" name="username" class="form-control<?= !empty($errors['username']) ? ' is-invalid' : '' ?>" value="<?= isset($old['username']) ? $this->escape($old['username']) : '' ?>" required>

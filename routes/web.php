@@ -16,6 +16,12 @@ $router->get('/auth/register', [
     'action' => 'register'
 ]);
 
+// Регистрация (POST)
+$router->post('/auth/register', [
+    'controller' => 'Auth\\Auth',
+    'action' => 'save'
+]);
+
 // Продукти (GET) – работи с навигацията
 $router->get('/products/list', [
     'controller' => 'User\\Products',
