@@ -120,7 +120,9 @@ class Router
             throw new \Exception("Методът {$action} не съществува в контролера {$controller}");
         }
         
-        // Извикване на метода
-        call_user_func_array([$controllerObject, $action], array_values($this->currentRoute));
+        // Извикване на метода с параметрите от URL (без 'controller' и 'action')
+        $args = $this->currentRoute;
+        unset($args['controller'], $args['action']);
+        call_user_func_array([$controllerObject, $action], array_values($args));
     }
 }

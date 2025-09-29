@@ -25,6 +25,23 @@ class UserController extends Controller
     }
 
     /**
+     * Показва страница за регистрация (само форма)
+     */
+    public function register()
+    {
+        $this->view->render('auth', 'register', []);
+    }
+
+    public function save()
+    {
+        echo "<pre>";
+        var_dump("in");
+        echo "</pre>";
+        exit();
+        // Обработка на регистрационната форма
+    }
+
+    /**
      * Показва конкретен потребител
      */
     public function show($id = null)
