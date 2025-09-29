@@ -14,15 +14,16 @@ class UserController extends Controller
     {
         parent::__construct();
     }
-    
-    /**
-     * Показва списък с потребители
-     */
-    public function index()
+
+    public function products()
     {
-        
+        echo "<pre>";
+        var_dump('in');
+        echo "</pre>";
+        exit();
+        $this->render('products/index');
     }
-    
+
     /**
      * Показва конкретен потребител
      */
