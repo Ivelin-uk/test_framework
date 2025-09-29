@@ -4,6 +4,7 @@ namespace App\Controllers\Auth;
 
 use Core\Controller;
 use App\Models\User;
+use App\Validation\RegisterValidator;
 
 class Auth extends Controller
 {
@@ -14,7 +15,8 @@ class Auth extends Controller
 
     public function register()
     {
-        $this->view->render('auth', 'register', $this->get_data());
+        $success = $this->get('success');
+        $this->view->render('auth', 'register', ['success' => $success]);
     }
 
     /**
@@ -22,7 +24,6 @@ class Auth extends Controller
      */
     public function save()
     {
-       
         if (!$this->isPost()) {
             return $this->redirect($this->view->url('auth/register'));
         }
@@ -30,32 +31,9 @@ class Auth extends Controller
         // Вземи всички POST полета като обект
         $input = $this->request->toObject();
 
-        $errors = [];
-
-        // Базови валидации
-        if (empty($input->username)) {
-            $errors['username'] = 'Потребителското име е задължително.';
-        }
-        if (empty($input->email) || !filter_var($input->email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Въведете валиден имейл.';
-        }
-        if (empty($input->password) || strlen($input->password) < 6) {
-            $errors['password'] = 'Паролата трябва да е поне 6 символа.';
-        }
-        if (!isset($input->password_confirm) || $input->password !== $input->password_confirm) {
-            $errors['password_confirm'] = 'Паролите не съвпадат.';
-        }
-
-        // Проверка за дубликати
-        $this->set_model('user');
-        if (empty($errors)) {
-            if ($this->model->findOne(['username' => $input->username])) {
-                $errors['username'] = 'Това потребителско име е заето.';
-            }
-            if ($this->model->findOne(['email' => $input->email])) {
-                $errors['email'] = 'Този имейл вече е регистриран.';
-            }
-        }
+        // Валидация чрез отделен клас
+        $validator = new RegisterValidator();
+        $errors = $validator->validate($input);
 
         if (!empty($errors)) {
             // Върни формата с грешки и стар вход (без паролите)
@@ -73,6 +51,7 @@ class Auth extends Controller
         // Създай потребителя
         try {
             $hash = password_hash($input->password, PASSWORD_DEFAULT);
+            $this->set_model('user');
             $this->model->create([
                 'username' => $input->username,
                 'email' => $input->email,
