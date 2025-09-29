@@ -18,33 +18,28 @@ class Autoloader
      */
     public static function load($className)
     {
-        // Конвертиране на namespace в път до файла
+        // PSR-4 подобно картографиране: Core -> CORE_PATH, App -> APP_PATH
         $className = ltrim($className, '\\');
-        $fileName = '';
-        $namespace = '';
-        
-        if ($lastNsPos = strrpos($className, '\\')) {
-            $namespace = substr($className, 0, $lastNsPos);
-            $className = substr($className, $lastNsPos + 1);
-            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+        $parts = explode('\\', $className);
+        $top = array_shift($parts);
+        $relative = implode(DIRECTORY_SEPARATOR, $parts) . '.php';
+
+        $candidates = [];
+        if ($top === 'Core') {
+            $candidates[] = CORE_PATH . DIRECTORY_SEPARATOR . $relative;
+        } elseif ($top === 'App') {
+            $candidates[] = APP_PATH . DIRECTORY_SEPARATOR . $relative;
         }
-        
-        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-        
-        // Опит за зареждане от различни директории
-        $paths = [
-            BASE_PATH . DIRECTORY_SEPARATOR . $fileName,
-            CORE_PATH . DIRECTORY_SEPARATOR . $fileName,
-            APP_PATH . DIRECTORY_SEPARATOR . $fileName,
-        ];
-        
-        foreach ($paths as $path) {
+        // Фолбек: от корена
+        $candidates[] = BASE_PATH . DIRECTORY_SEPARATOR . $top . DIRECTORY_SEPARATOR . $relative;
+
+        foreach ($candidates as $path) {
             if (file_exists($path)) {
                 require_once $path;
                 return true;
             }
         }
-        
+
         return false;
     }
 }
