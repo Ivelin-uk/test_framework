@@ -7,7 +7,6 @@
 // Временно дебъгване
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-echo "Framework се зарежда...<br>";
 
 // Дефиниране на основни константи
 define('BASE_PATH', dirname(__DIR__));

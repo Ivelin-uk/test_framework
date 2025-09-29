@@ -6,10 +6,9 @@
     <title><?= isset($title) ? $this->escape($title) : 'Моят PHP Framework' ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
-<body class="bg-body-tertiary">
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <span class="navbar-brand">🚀 Моят Framework</span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -23,13 +22,13 @@
         </div>
     </nav>
 
-    <main class="container my-4">
+    <main class="container my-4 flex-grow-1">
         <div class="bg-white rounded-3 shadow-sm p-4">
             <?= $content ?? '' ?>
         </div>
     </main>
 
-    <footer class="py-4 bg-body-secondary border-top">
+    <footer class="py-4 bg-body-secondary border-top mt-auto">
         <div class="container text-center">
             <small class="text-muted">&copy; <?= date('Y') ?> Моят PHP Framework. Всички права запазени.</small>
         </div>
