@@ -11,6 +11,8 @@ namespace Core;
 abstract class Controller
 {
     protected $view;
+    /** @var \Core\Model|null */
+    protected $model;
     
     /**
      * Конструктор
@@ -18,6 +20,69 @@ abstract class Controller
     public function __construct()
     {
         $this->view = new View();
+    }
+
+    /**
+     * Зарежда и сетва модел по име или FQCN
+     * Примери:
+     *  - $this->set_model('user') => App\Models\User
+     *  - $this->set_model('product') => App\Models\Product
+     *  - $this->set_model(App\Models\User::class)
+     *  - $this->set_model(new App\Models\User())
+     * Връща инстанцията на модела и я записва в $this->model
+     *
+     * @param string|object $model
+     * @return \Core\Model
+     */
+    protected function set_model($model)
+    {
+        if (is_object($model)) {
+            if ($model instanceof Model) {
+                $this->model = $model;
+                return $this->model;
+            }
+            throw new \InvalidArgumentException('Предаденият обект не е валиден модел.');
+        }
+
+        if (!is_string($model) || $model === '') {
+            throw new \InvalidArgumentException('Моделът трябва да е име на клас или низ.');
+        }
+
+        // Ако е FQCN – използвай директно, иначе конструирай от App\Models
+        $class = strpos($model, '\\') !== false
+            ? $model
+            : 'App\\Models\\' . self::studly($model);
+
+        if (!class_exists($class)) {
+            throw new \RuntimeException("Моделният клас {$class} не съществува.");
+        }
+
+        $instance = new $class();
+        if (!($instance instanceof Model)) {
+            throw new \RuntimeException("Класът {$class} не наследява Core\\Model.");
+        }
+
+        $this->model = $instance;
+        return $this->model;
+    }
+
+    /**
+     * Връща текущия модел
+     * @return \Core\Model|null
+     */
+    protected function get_model()
+    {
+        return $this->model ?? null;
+    }
+
+    /**
+     * Превръща низ към StudlyCase (user_profile -> UserProfile)
+     */
+    private static function studly($value)
+    {
+        $value = str_replace(['-', '_'], ' ', strtolower($value));
+        $value = ucwords($value);
+        return str_replace(' ', '', $value);
     }
     
     /**

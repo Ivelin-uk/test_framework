@@ -11,8 +11,16 @@ namespace Core;
 abstract class Model
 {
     protected static $connection;
+    /** @var \PDO */
+    protected $pdo;
     protected $table;
     protected $primaryKey = 'id';
+    
+    public function __construct()
+    {
+        // Създава и пази PDO връзка на ниво инстанция
+        $this->pdo = self::getConnection();
+    }
     
     /**
      * Създава връзка към базата данни
@@ -48,55 +56,94 @@ abstract class Model
     }
     
     /**
-     * Намира записи по ID
-     * 
-     * @param int $id
-     * @return array|null
+     * Намира записи по ID или условия
+     *
+     * Приема следните формати за $criteria:
+     * - scalar (int|string): търсене по първичен ключ
+     * - асоциативен масив: [ 'field' => value, ... ] – AND между условията
+     * - масив от обекти/масиви: [ {field1: val1, field2: val2}, {field3: val3} ] – OR между групите, AND в група
+     * Връща масив от обекти (stdClass). За единичен резултат вземете първия елемент.
+     *
+     * @param mixed $criteria
+     * @return array Масив от обекти (stdClass)
      */
-    public function find($id)
-    {
-        $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id";
-        $stmt = self::getConnection()->prepare($sql);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
-    }
-    
-    /**
-     * Намира всички записи
-     * 
-     * @param array $conditions Условия за търсене
-     * @param string $orderBy Сортиране
-     * @param int $limit Лимит
-     * @return array
-     */
-    public function findAll($conditions = [], $orderBy = null, $limit = null)
+    public function find($criteria = null)
     {
         $sql = "SELECT * FROM {$this->table}";
         $params = [];
-        
-        if (!empty($conditions)) {
-            $whereClauses = [];
-            foreach ($conditions as $key => $value) {
-                $whereClauses[] = "{$key} = :{$key}";
-                $params[$key] = $value;
+
+        if ($criteria === null || (is_array($criteria) && empty($criteria))) {
+            // Без WHERE – връщаме всички
+        } elseif (is_array($criteria)) {
+            if (!empty($criteria)) {
+                $isList = array_keys($criteria) === range(0, count($criteria) - 1);
+
+                if ($isList) {
+                    // Масив от групи: (g1) OR (g2) OR ... ; всяка група е AND от полета
+                    $groups = [];
+                    $gi = 0;
+                    foreach ($criteria as $group) {
+                        if (is_object($group)) {
+                            $group = (array) $group;
+                        }
+                        if (!is_array($group) || empty($group)) {
+                            $gi++;
+                            continue;
+                        }
+                        $clauses = [];
+                        foreach ($group as $key => $value) {
+                            $param = $key . '_' . $gi;
+                            $clauses[] = "{$key} = :{$param}";
+                            $params[$param] = $value;
+                        }
+                        if (!empty($clauses)) {
+                            $groups[] = '(' . implode(' AND ', $clauses) . ')';
+                        }
+                        $gi++;
+                    }
+                    if (!empty($groups)) {
+                        $sql .= ' WHERE ' . implode(' OR ', $groups);
+                    }
+                } else {
+                    // Единична група: AND между условията
+                    $whereClauses = [];
+                    foreach ($criteria as $key => $value) {
+                        $whereClauses[] = "{$key} = :{$key}";
+                        $params[$key] = $value;
+                    }
+                    if (!empty($whereClauses)) {
+                        $sql .= ' WHERE ' . implode(' AND ', $whereClauses);
+                    }
+                }
             }
-            $sql .= " WHERE " . implode(' AND ', $whereClauses);
+        } else {
+            // Търсене по първичен ключ
+            $sql .= " WHERE {$this->primaryKey} = :id";
+            $params['id'] = $criteria;
         }
-        
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
-        }
-        
-        if ($limit) {
-            $sql .= " LIMIT {$limit}";
-        }
-        
-        $stmt = self::getConnection()->prepare($sql);
+
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_OBJ);
+    }
+
+    /**
+     * Връща един запис (първия) според критериите
+     */
+    public function findOne($criteria)
+    {
+        $rows = $this->find($criteria);
+        return $rows[0] ?? null;
+    }
+
+    /**
+     * Връща всички записи от таблицата
+     */
+    public function all()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table}");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_OBJ);
     }
     
     /**
@@ -112,10 +159,10 @@ abstract class Model
         
         $sql = "INSERT INTO {$this->table} (" . implode(', ', $fields) . ") VALUES ({$values})";
         
-        $stmt = self::getConnection()->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
         
-        return self::getConnection()->lastInsertId();
+        return $this->pdo->lastInsertId();
     }
     
     /**
@@ -135,7 +182,7 @@ abstract class Model
         $sql = "UPDATE {$this->table} SET " . implode(', ', $setParts) . " WHERE {$this->primaryKey} = :id";
         
         $data['id'] = $id;
-        $stmt = self::getConnection()->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         
         return $stmt->execute($data);
     }
@@ -149,7 +196,7 @@ abstract class Model
     public function delete($id)
     {
         $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
-        $stmt = self::getConnection()->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         
         return $stmt->execute();
@@ -164,7 +211,7 @@ abstract class Model
      */
     public function query($sql, $params = [])
     {
-        $stmt = self::getConnection()->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
