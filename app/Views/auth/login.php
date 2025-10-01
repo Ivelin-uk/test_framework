@@ -1,21 +1,39 @@
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-      <h1 class="h3 mb-4">Вход</h1>
-      <form method="post" action="<?= $this->url('auth/login') ?>" class="g-3">
-        <div class="mb-3">
-          <label class="form-label">Имейл</label>
-          <input type="email" name="email" class="form-control" value="<?= isset($old['email']) ? $this->escape($old['email']) : '' ?>" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Парола</label>
-          <input type="password" name="password" class="form-control" required>
-        </div>
-        <div class="mt-3 d-flex gap-2">
-          <button class="btn btn-primary">Вход</button>
-          <a class="btn btn-outline-secondary" href="<?= $this->url('') ?>">Отказ</a>
-        </div>
-      </form>
+<div class="center-content">
+    <div class="form-container">
+        <h1 class="h3 mb-4 text-gradient text-center">Вход в системата</h1>
+        
+        <form method="post" action="<?= $this->url('auth/login') ?>" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label class="form-label">Имейл адрес</label>
+                <input type="email" 
+                       name="email" 
+                       class="form-control" 
+                       value="<?= isset($old['email']) ? $this->escape($old['email']) : '' ?>" 
+                       required>
+                <div class="invalid-feedback">
+                    Моля въведете валиден имейл адрес.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Парола</label>
+                <input type="password" 
+                       name="password" 
+                       class="form-control" 
+                       required>
+                <div class="invalid-feedback">
+                    Моля въведете вашата парола.
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary hover-lift">
+                    Влез в системата
+                </button>
+                <a class="btn btn-outline-secondary" href="<?= $this->url('auth/register') ?>">
+                    Няма акаунт? Регистрирай се
+                </a>
+            </div>
+        </form>
     </div>
-  </div>
 </div>
