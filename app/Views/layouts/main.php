@@ -14,7 +14,7 @@
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('') ?>">Начало</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('products/discount_list') ?>">Начало</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $this->url('products/list') ?>">Продукти</a></li>
                     <?php if (\Core\Auth::check()): ?>
                         <li class="nav-item"><span class="nav-link">Здравей, <?= $this->escape(\Core\Auth::user()->name) ?></span></li>

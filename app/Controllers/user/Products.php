@@ -11,7 +11,11 @@ class Products extends Controller
         parent::__construct();
     }
 
-    
+    public function discount_list()
+    {
+        return $this->view->render('products', 'discount_list', $this->get_data());
+    }
+
     public function list()
     {
         // Съвместимост с линка products/list – ползвай същия изглед като index

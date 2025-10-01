@@ -44,3 +44,9 @@ $router->get('/products/list', [
     'controller' => 'User\\Products',
     'action' => 'list'
 ]);
+
+
+$router->get('/products/discount_list', [
+    'controller' => 'User\\Products',
+    'action' => 'discount_list'
+]);

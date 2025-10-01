@@ -34,7 +34,7 @@ class Auth extends Controller
             // Успешен логин
             \Core\Auth::login($user);
             \Core\Flash::set('status', 'Добре дошли, ' . $user->username . '!', 'success');
-            return $this->redirect($this->view->url(''));
+            return $this->redirect($this->view->url('products/list'));
         }
         
         // GET заявка - покажи формата
