@@ -5,24 +5,41 @@
 
 $router = $app->getRouter();
 
+// Начало
+$router->get('/', [
+    'controller' => 'Home\\Home', 
+    'action' => 'index'
+]);
+
 // Логин
 $router->get('/auth/login', [
     'controller' => 'Auth\\Auth', 
     'action' => 'login'
 ]);
 
+$router->post('/auth/login', [
+    'controller' => 'Auth\\Auth', 
+    'action' => 'login'
+]);
+
+// Излизане
+$router->get('/auth/logout', [
+    'controller' => 'Auth\\Auth', 
+    'action' => 'logout'
+]);
+
+// Регистрация
 $router->get('/auth/register', [
     'controller' => 'Auth\\Auth', 
     'action' => 'register'
 ]);
 
-// Регистрация (POST)
 $router->post('/auth/register', [
     'controller' => 'Auth\\Auth',
     'action' => 'save'
 ]);
 
-// Продукти (GET) – работи с навигацията
+// Продукти
 $router->get('/products/list', [
     'controller' => 'User\\Products',
     'action' => 'list'

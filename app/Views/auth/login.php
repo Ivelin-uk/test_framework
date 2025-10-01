@@ -2,10 +2,10 @@
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
       <h1 class="h3 mb-4">Вход</h1>
-      <form method="post" action="#" class="g-3">
+      <form method="post" action="<?= $this->url('auth/login') ?>" class="g-3">
         <div class="mb-3">
           <label class="form-label">Имейл</label>
-          <input type="email" name="email" class="form-control" required>
+          <input type="email" name="email" class="form-control" value="<?= isset($old['email']) ? $this->escape($old['email']) : '' ?>" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Парола</label>

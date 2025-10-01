@@ -14,9 +14,15 @@
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('') ?>">Начало</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $this->url('products/list') ?>">Продукти</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/login') ?>">Логин</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/register') ?>">Регистър</a></li>
+                    <?php if (\Core\Auth::check()): ?>
+                        <li class="nav-item"><span class="nav-link">Здравей, <?= $this->escape(\Core\Auth::user()->name) ?></span></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/logout') ?>">Изход</a></li>
+                    <?php else: ?>
+                        <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/login') ?>">Логин</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= $this->url('auth/register') ?>">Регистър</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
