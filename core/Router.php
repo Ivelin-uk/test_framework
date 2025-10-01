@@ -46,7 +46,7 @@ class Router
     {
         // Конвертиране на маршрута в regex
         $route = preg_replace('/\//', '\\/', $route);
-        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
+        $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z0-9-]+)', $route);
         $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
         $route = '/^' . $route . '$/i';
         

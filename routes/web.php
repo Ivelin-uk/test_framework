@@ -39,7 +39,33 @@ $router->post('/auth/register', [
     'action' => 'save'
 ]);
 
-// Продукти
+// Магазин
+$router->get('/shop', [
+    'controller' => 'Shop\\Shop',
+    'action' => 'index'
+]);
+
+$router->get('/shop/category/{id}', [
+    'controller' => 'Shop\\Shop',
+    'action' => 'category'
+]);
+
+$router->get('/shop/product/{id}', [
+    'controller' => 'Shop\\Shop',
+    'action' => 'product'
+]);
+
+$router->get('/shop/search', [
+    'controller' => 'Shop\\Shop',
+    'action' => 'search'
+]);
+
+$router->get('/shop/featured', [
+    'controller' => 'Shop\\Shop',
+    'action' => 'featured'
+]);
+
+// Продукти (стари routes)
 $router->get('/products/list', [
     'controller' => 'User\\Products',
     'action' => 'list'

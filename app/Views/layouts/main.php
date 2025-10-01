@@ -16,13 +16,13 @@
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $this->url('products/discount_list') ?>" data-nav-persist="true">
+                        <a class="nav-link" href="<?= $this->url('') ?>" data-nav-persist="true">
                             Начало
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $this->url('products/list') ?>" data-nav-persist="true">
-                            Продукти
+                        <a class="nav-link" href="<?= $this->url('shop') ?>" data-nav-persist="true">
+                            <i class="fas fa-store me-1"></i>Магазин
                         </a>
                     </li>
                     <?php if (\Core\Auth::check()): ?>
