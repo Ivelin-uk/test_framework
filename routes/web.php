@@ -64,15 +64,3 @@ $router->get('/shop/featured', [
     'controller' => 'Shop\\Shop',
     'action' => 'featured'
 ]);
-
-// Продукти (стари routes)
-$router->get('/products/list', [
-    'controller' => 'User\\Products',
-    'action' => 'list'
-]);
-
-
-$router->get('/products/discount_list', [
-    'controller' => 'User\\Products',
-    'action' => 'discount_list'
-]);
